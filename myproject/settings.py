@@ -72,7 +72,7 @@ WSGI_APPLICATION = 'myproject.wsgi.application'  # Đổi thành 'myproject.wsgi
 if 'RENDER' in os.environ:
     DATABASES = {
         'default': dj_database_url.config(
-            default='postgresql://phone_store_user:k9ixLwj0g1f2GYD8exVOouWZIeynD2Yt@dpg-d0mp47muk2gs73frtqdg-a/phone_store',
+            default=os.environ.get('DATABASE_URL'),  # Sử dụng biến môi trường chuẩn
             conn_max_age=600
         )
     }
