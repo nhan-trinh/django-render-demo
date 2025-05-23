@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from store.models import Order, Profile, Phone, Brand, Cart, OrderItem
+from .models import Order, Profile
 
 def is_admin(user):
     return user.is_superuser or user.is_staff
@@ -32,7 +32,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm  # Thêm dòng này
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
-from store.models import Phone, Brand, Cart, Order, OrderItem
+from .models import Phone, Brand, Cart, Order, OrderItem
 from django.core.paginator import Paginator
 
 def home(request):

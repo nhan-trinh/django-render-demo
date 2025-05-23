@@ -1,0 +1,267 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Chỉ nên có một block title trong base.html -->
+    <title>{% block title %}LOKKI Phone{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" href="{% static 'store/images/shop.png' %}" type="image/png">
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        #content {
+            flex: 1 0 auto;
+        }
+        footer {
+            flex-shrink: 0;
+        }
+        .bg-darker {
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+        footer .social-links a:hover {
+            opacity: 0.8;
+        }
+        footer ul li {
+            margin-bottom: 0.5rem;
+        }
+        footer ul li a:hover {
+            opacity: 0.8;
+        }
+        footer i {
+            width: 20px;
+        }
+        .specs-box {
+            background-color: #f8f9fa;
+        }
+
+        .specs-box li {
+            margin-bottom: 0.5rem;
+        }
+
+        .btn-lg {
+            padding: 0.8rem 2rem;
+        }
+
+        .breadcrumb a {
+            text-decoration: none;
+            color: #6c757d;
+        }
+
+        .breadcrumb a:hover {
+            color: #0d6efd;
+        }
+
+        /* Custom styles */
+        .navbar {
+            padding: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,.1);
+            background: linear-gradient(to right, #1a1a1a, #363636) !important;
+        }
+        
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem !important;
+            margin: 0 0.2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: #ffc107 !important;
+        }
+        
+        .search-form {
+            position: relative;
+            width: 300px;
+        }
+        
+        .search-form .form-control {
+            border-radius: 20px;
+            padding-left: 1rem;
+            padding-right: 3rem;
+            background-color: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+        }
+        
+        .search-form .btn {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            border-radius: 20px;
+            padding: 0.375rem 1rem;
+        }
+        
+        .navbar-auth .btn {
+            border-radius: 20px;
+            padding: 0.375rem 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .cart-btn {
+            position: relative;
+        }
+        
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: #ffc107;
+            color: black;
+            border-radius: 50%;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+        }
+    </style>
+</head>
+<body>
+    <div id="content">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
+                <a class="navbar-brand" href="/">
+                    <i class="fas fa-mobile-alt me-2"></i>LOKKI Phone
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{% url 'home' %}">
+                                <i class="fas fa-home me-1"></i>Trang chủ
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if 'brands' in request.path %}active{% endif %}" href="{% url 'brands' %}">
+                                <i class="fas fa-tags me-1"></i>Thương hiệu
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <form class="search-form d-flex me-3" action="{% url 'search' %}" method="get">
+                        <input class="form-control" type="search" name="q" placeholder="Tìm kiếm điện thoại..." 
+                               aria-label="Search">
+                        <button class="btn btn-outline-light" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
+                    
+                    <div class="navbar-auth d-flex align-items-center">
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'cart' %}" class="btn btn-outline-light me-2 cart-btn">
+                                <i class="fas fa-shopping-cart"></i>
+                                {% if cart_count > 0 %}
+                                    <span class="cart-badge">{{ cart_count }}</span>
+                                {% endif %}
+                            </a>
+                            <div class="dropdown">
+                                <button class="btn btn-light dropdown-toggle d-flex align-items-center" type="button" id="userDropdown" 
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                    {% if user.profile.avatar %}
+                                        <img src="{{ user.profile.avatar.url }}" alt="Avatar" class="rounded-circle me-2" style="width:32px; height:32px; object-fit:cover;">
+                                    {% else %}
+                                        <img src="{% static 'default-avatar.png' %}" alt="Avatar" class="rounded-circle me-2" style="width:32px; height:32px; object-fit:cover;">
+                                    {% endif %}
+                                    <span>{{ user.username }}</span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                    <li><a class="dropdown-item" href="{% url 'profile' %}">
+                                        <i class="fas fa-user-circle me-2"></i>Tài khoản
+                                    </a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item text-danger" href="{% url 'logout' %}">
+                                        <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
+                                    </a></li>
+                                </ul>
+                            </div>
+                        {% else %}
+                            <a href="{% url 'login' %}" class="btn btn-outline-light me-2">
+                                <i class="fas fa-sign-in-alt me-1"></i>Đăng nhập
+                            </a>
+                            <a href="{% url 'register' %}" class="btn btn-light">
+                                <i class="fas fa-user-plus me-1"></i>Đăng ký
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container mt-3">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        
+        <div class="container mt-4" id="content">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <footer class="bg-dark text-light mt-5">
+        <div class="container py-5">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5>LOKKI Phone</h5>
+                    <p>Chuyên cung cấp các sản phẩm điện thoại chính hãng với giá tốt nhất thị trường.</p>
+                    <div class="social-links">
+                        <a href="#" class="text-light me-3"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-light me-3"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-light"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5>Liên kết nhanh</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'home' %}" class="text-light text-decoration-none">Trang chủ</a></li>
+                        <li><a href="{% url 'brands' %}" class="text-light text-decoration-none">Thương hiệu</a></li>
+                        <li><a href="{% url 'cart' %}" class="text-light text-decoration-none">Giỏ hàng</a></li>
+                        {% if user.is_authenticated %}
+                            <li><a href="{% url 'profile' %}" class="text-light text-decoration-none">Tài khoản</a></li>
+                        {% else %}
+                            <li><a href="{% url 'login' %}" class="text-light text-decoration-none">Đăng nhập</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5>Thông tin liên hệ</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-map-marker-alt me-2"></i>123 Street Name, City, Country</li>
+                        <li><i class="fas fa-phone me-2"></i>(+84) 123-456-789</li>
+                        <li><i class="fas fa-envelope me-2"></i>contact@lokkiphone.com</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="bg-darker py-3">
+            <div class="container text-center">
+                <small>&copy; {% now "Y" %} LOKKI Phone. All rights reserved.</small>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Font Awesome for icons -->
+    <script src="https://kit.fontawesome.com/your-code-here.js" crossorigin="anonymous"></script>
+</body>
+
+</html>

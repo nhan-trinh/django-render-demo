@@ -1,0 +1,47 @@
+{% extends 'store/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">Sản phẩm của chúng tôi</h2>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
+        {% for phone in featured_phones %}
+        <div class="col">
+            <div class="card h-100">
+                {% if phone.image %}
+                <img src="{{ phone.image.url }}" class="card-img-top" alt="{{ phone.name }}">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ phone.name }}</h5>
+                    <p class="card-text">${{ phone.price }}</p>
+                    <a href="{% url 'phone_detail' phone.id %}" class="btn btn-primary">Xem chi tiết</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if featured_phones.has_other_pages %}
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if featured_phones.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ featured_phones.previous_page_number }}">Previous</a>
+            </li>
+            {% endif %}
+
+            {% for num in featured_phones.paginator.page_range %}
+            <li class="page-item {% if featured_phones.number == num %}active{% endif %}">
+                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+            </li>
+            {% endfor %}
+
+            {% if featured_phones.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ featured_phones.next_page_number }}">Next</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}
