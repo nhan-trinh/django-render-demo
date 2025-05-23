@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 import os
 from pathlib import Path
-import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -37,7 +36,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Static file serving for production
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -46,7 +45,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'myproject.urls'  # Đổi thành 'myproject.urls' nếu project của bạn là myproject
+ROOT_URLCONF = 'myproject.urls'
 
 TEMPLATES = [
     {
@@ -66,23 +65,15 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'myproject.wsgi.application'  # Đổi thành 'myproject.wsgi.application' nếu project của bạn là myproject
+WSGI_APPLICATION = 'myproject.wsgi.application'
 
-# Database
-if 'RENDER' in os.environ:
-    DATABASES = {
-        'default': dj_database_url.config(
-            default=os.environ.get('DATABASE_URL'),  # Sử dụng biến môi trường chuẩn
-            conn_max_age=600
-        )
+# Database: chỉ dùng SQLite
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -116,7 +107,6 @@ LOCALE_PATHS = [
 
 CSRF_TRUSTED_ORIGINS = ['https://*.onrender.com']
 
-# Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
